@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial Orientation Test</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/hegarty-sot.css">
+</head>
+<body class="minimal-ui">
+    <div id="sot-container">
+        <!-- Test content will be dynamically inserted here -->
+        <div class="d-flex justify-content-center align-items-center" style="height: 400px;">
+            <span>Loading test, please wait...</span>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="js/hegarty-sot.js"></script>
+    <script>
+        // Initialize the test when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we're in a Qualtrics environment
+            const isInQualtrics = window.parent && window.parent.Qualtrics;
+            
+            // Initialize the experiment
+            initSpatialOrientationTest(isInQualtrics);
+        });
+    </script>
+</body>
+</html>
