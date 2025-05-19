@@ -32,9 +32,9 @@ const testTrials = [
 
 // Practice trials
 const practiceTrials = [
-    { id: 'p1', standing: 'bell', facing: 'tree', pointing: 'drum', correctAngle: 45 },
-    { id: 'p2', standing: 'tree', facing: 'bell', pointing: 'trash-can', correctAngle: 135 },
-    { id: 'p3', standing: 'trash-can', facing: 'bell', pointing: 'wheel', correctAngle: 90 }
+    { id: 'p1', standing: 'bell', facing: 'tree', pointing: 'drum' },
+    { id: 'p2', standing: 'tree', facing: 'bell', pointing: 'trash-can' },
+    { id: 'p3', standing: 'trash-can', facing: 'bell', pointing: 'wheel' }
 ];
 
 // Global variables for tracking test state
@@ -163,8 +163,11 @@ function startPracticeTrial(index) {
         if (e.code === 'Enter') {
             document.removeEventListener('keydown', enterHandler);
             
+            // Calculate the correct angle
+            const correctAngle = calculateCorrectAngle(trial.standing, trial.facing, trial.pointing);
+            
             // Show correct answer
-            showCorrectAnswer(trial.correctAngle);
+            showCorrectAnswer(correctAngle);
             
             // Wait 2 seconds and move to next trial
             setTimeout(() => {
@@ -279,21 +282,71 @@ function showTestTrial() {
     });
 }
 
+// Fixed positions of objects in the scene
+const objectPositions = [
+    { id: 'wheel', x: 50, y: 20 },       // Wheel at top center
+    { id: 'traffic-light', x: 25, y: 35 }, // Traffic light at middle left
+    { id: 'barrel', x: 75, y: 40 },      // Barrel at middle right
+    { id: 'trash-can', x: 20, y: 65 },   // Trash can at bottom left
+    { id: 'tree', x: 80, y: 80 },        // Tree at bottom right
+    { id: 'drum', x: 50, y: 65 },        // Drum at bottom center
+    { id: 'bell', x: 50, y: 50 }         // Bell at center
+];
+
+// Calculate the correct angle between objects based on their positions
+function calculateCorrectAngle(standingId, facingId, pointingId) {
+    // Find the positions of the three objects
+    const standingPos = objectPositions.find(pos => pos.id === standingId);
+    const facingPos = objectPositions.find(pos => pos.id === facingId);
+    const pointingPos = objectPositions.find(pos => pos.id === pointingId);
+    
+    if (!standingPos || !facingPos || !pointingPos) {
+        console.error('Cannot find positions for objects:', standingId, facingId, pointingId);
+        return 0;
+    }
+    
+    // Calculate vectors
+    // Vector from standing to facing (defines 0 degrees in the person's reference frame)
+    const facingVector = {
+        x: facingPos.x - standingPos.x,
+        y: facingPos.y - standingPos.y
+    };
+    
+    // Vector from standing to pointing
+    const pointingVector = {
+        x: pointingPos.x - standingPos.x,
+        y: pointingPos.y - standingPos.y
+    };
+    
+    // Calculate the angle between the two vectors
+    // First get the angle of each vector from the positive x-axis
+    const facingAngle = Math.atan2(facingVector.y, facingVector.x);
+    const pointingAngle = Math.atan2(pointingVector.y, pointingVector.x);
+    
+    // Calculate the difference and convert to degrees
+    let angleDiff = (pointingAngle - facingAngle) * (180 / Math.PI);
+    
+    // Normalize to 0-360 range
+    angleDiff = (angleDiff + 360) % 360;
+    
+    // In this test, angles should be interpreted from the perspective of someone
+    // standing at standingPos and facing facingPos.
+    // The angle should be measured clockwise from the facing direction
+    
+    // Since our facingAngle is now 0 degrees in this coordinate system,
+    // we need to use 90 degrees as our reference (since y-axis is inverted in browser)
+    let finalAngle = (-angleDiff + 90) % 360;
+    
+    // Final normalization to 0-360
+    if (finalAngle < 0) finalAngle += 360;
+    
+    return finalAngle;
+}
+
 // Place objects in the scene - use fixed positions to match the screenshots
 function placeObjectsInScene(container) {
-    // Fixed positions based on screenshots
-    const positions = [
-        { id: 'wheel', x: 50, y: 20 },       // Wheel at top center
-        { id: 'traffic-light', x: 25, y: 35 }, // Traffic light at middle left
-        { id: 'barrel', x: 75, y: 40 },      // Barrel at middle right
-        { id: 'trash-can', x: 20, y: 65 },   // Trash can at bottom left
-        { id: 'tree', x: 80, y: 80 },        // Tree at bottom right
-        { id: 'drum', x: 50, y: 65 },        // Drum at bottom center
-        { id: 'bell', x: 50, y: 50 }         // Bell at center
-    ];
-    
     // Place all objects
-    positions.forEach(pos => {
+    objectPositions.forEach(pos => {
         const obj = objects.find(o => o.id === pos.id);
         if (obj) {
             const objectElement = document.createElement('div');
