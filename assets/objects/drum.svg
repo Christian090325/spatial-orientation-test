@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <g transform="translate(20, 20)">
+    <!-- Drum body -->
+    <rect x="-12" y="-8" width="24" height="16" rx="2" ry="2" fill="#8b4513" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Drum top -->
+    <ellipse cx="0" cy="-8" rx="12" ry="3" fill="#a0522d" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Drum bottom -->
+    <ellipse cx="0" cy="8" rx="12" ry="3" fill="#a0522d" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Drum highlight rim -->
+    <ellipse cx="0" cy="-8" rx="9" ry="2" fill="none" stroke="#daa520" stroke-width="1"/>
+    <ellipse cx="0" cy="8" rx="9" ry="2" fill="none" stroke="#daa520" stroke-width="1"/>
+    
+    <!-- Red dot -->
+    <circle cx="0" cy="0" r="3" fill="#ff4040"/>
+    
+    <!-- Drum sticks -->
+    <line x1="-13" y1="-12" x2="-5" y2="-6" stroke="#8b4513" stroke-width="2" stroke-linecap="round"/>
+    <line x1="13" y1="-12" x2="5" y2="-6" stroke="#8b4513" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Snare lines - more prominent -->
+    <line x1="-12" y1="-4" x2="12" y2="-4" stroke="#daa520" stroke-width="1"/>
+    <line x1="-12" y1="0" x2="12" y2="0" stroke="#daa520" stroke-width="1"/>
+    <line x1="-12" y1="4" x2="12" y2="4" stroke="#daa520" stroke-width="1"/>
+    
+    <!-- Label -->
+    <text x="0" y="16" font-family="Arial" font-size="6" text-anchor="middle" fill="#000">DRUM</text>
+  </g>
+</svg>
