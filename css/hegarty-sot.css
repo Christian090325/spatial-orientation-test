@@ -1,0 +1,89 @@
+/* Styles for the Spatial Orientation Test (Hegarty Lab style) */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+#sot-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Scene styles */
+#objects-container {
+    background-color: white;
+    border: 1px solid #ddd;
+    position: relative;
+    height: 400px;
+    margin-bottom: 20px;
+}
+
+/* Response circle styles */
+#response-circle {
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Instructions styles */
+.instructions {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* Timer styles */
+#timer {
+    font-weight: bold;
+    color: #dc3545;
+}
+
+/* Make sure the objects are properly positioned */
+.scene-object {
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+/* Progress indicator */
+.progress-indicator {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* White background for test area */
+.test-area {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Black text to match the screenshots */
+.test-area, .test-area p, .test-area h3 {
+    color: black;
+}
+
+/* Make buttons match the style */
+.action-button {
+    background-color: #f8f9fa;
+    color: black;
+    border: 1px solid #ddd;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+/* The Hegarty Lab test has simple UI */
+.minimal-ui {
+    font-family: Arial, sans-serif;
+    color: black;
+    background-color: white;
+}
+
+/* Black and white style to match the screenshots */
+.bw-style {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
