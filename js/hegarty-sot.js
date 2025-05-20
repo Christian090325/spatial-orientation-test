@@ -346,7 +346,6 @@ function calculateCorrectAngle(standingId, facingId, pointingId) {
     // We need to find the angle between these two vectors
     
     // The y-axis is inverted in screen coordinates (0 at top, increases downward)
-    // So we need to adjust our calculations
     
     // For the dot product calculation
     const dotProduct = facingDirX * pointingVecX + facingDirY * pointingVecY;
@@ -363,6 +362,10 @@ function calculateCorrectAngle(standingId, facingId, pointingId) {
     
     // Normalize to 0-360 range
     angle = (angle + 360) % 360;
+    
+    // Mirror the angle as required for proper perspective
+    // This flips the angle to the opposite side of the circle
+    angle = (180 + angle) % 360;
     
     return angle;
 }
@@ -521,8 +524,11 @@ function showCorrectAnswer(correctAngle) {
     const centerY = canvas.height / 2;
     const radius = Math.min(canvas.width, canvas.height) / 2 - 20;
     
+    // Mirror the angle to show on the opposite side (add 180 degrees)
+    const mirroredAngle = (correctAngle + 180) % 360;
+    
     // Convert angle to radians (and adjust for 0 at top)
-    const radians = (correctAngle - 90) * Math.PI / 180;
+    const radians = (mirroredAngle - 90) * Math.PI / 180;
     
     // Draw the red line showing correct answer
     ctx.beginPath();
