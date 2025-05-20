@@ -266,18 +266,35 @@ function showTestTrial() {
             // Record response
             const responseTime = (Date.now() - startTime) / 1000;
             
+            // Calculate the correct angle for this trial
+            const correctAngle = calculateCorrectAngle(trial.standing, trial.facing, trial.pointing);
+            
+            // Calculate angular error (difference between response and correct angle)
+            let angularError = Math.abs(currentAngle - correctAngle);
+            // Convert to smallest angle (0-180 range)
+            if (angularError > 180) {
+                angularError = 360 - angularError;
+            }
+            
             responses.push({
                 trialId: trial.id,
                 standing: trial.standing,
                 facing: trial.facing,
                 pointing: trial.pointing,
                 responseAngle: currentAngle,
+                correctAngle: correctAngle,
+                angularError: angularError,
                 responseTime: responseTime
             });
             
-            // Move to next trial
-            currentTrial++;
-            showTestTrial();
+            // Show the correct answer in red
+            showCorrectAnswer(correctAngle);
+            
+            // Wait 1.5 seconds and move to next trial
+            setTimeout(() => {
+                currentTrial++;
+                showTestTrial();
+            }, 1500);
         }
     });
 }
@@ -305,42 +322,49 @@ function calculateCorrectAngle(standingId, facingId, pointingId) {
         return 0;
     }
     
-    // Calculate vectors
-    // Vector from standing to facing (defines 0 degrees in the person's reference frame)
-    const facingVector = {
-        x: facingPos.x - standingPos.x,
-        y: facingPos.y - standingPos.y
-    };
+    // In a spatial orientation test, we need to determine the angle from the perspective
+    // of someone standing at the standing object and facing the facing object
     
-    // Vector from standing to pointing
-    const pointingVector = {
-        x: pointingPos.x - standingPos.x,
-        y: pointingPos.y - standingPos.y
-    };
+    // Step 1: Create a local coordinate system where:
+    // - The origin is at the standing object
+    // - The positive y-axis (0 degrees) points toward the facing object
     
-    // Calculate the angle between the two vectors
-    // First get the angle of each vector from the positive x-axis
-    const facingAngle = Math.atan2(facingVector.y, facingVector.x);
-    const pointingAngle = Math.atan2(pointingVector.y, pointingVector.x);
+    // First, get the direction vector from standing to facing
+    let facingDirX = facingPos.x - standingPos.x;
+    let facingDirY = facingPos.y - standingPos.y;
     
-    // Calculate the difference and convert to degrees
-    let angleDiff = (pointingAngle - facingAngle) * (180 / Math.PI);
+    // Normalize this vector (make it unit length)
+    const facingLength = Math.sqrt(facingDirX * facingDirX + facingDirY * facingDirY);
+    facingDirX /= facingLength;
+    facingDirY /= facingLength;
+    
+    // Step 2: Get the vector from standing to pointing
+    let pointingVecX = pointingPos.x - standingPos.x;
+    let pointingVecY = pointingPos.y - standingPos.y;
+    
+    // Step 3: In our coordinate system, the facing direction is our reference (0 degrees)
+    // We need to find the angle between these two vectors
+    
+    // The y-axis is inverted in screen coordinates (0 at top, increases downward)
+    // So we need to adjust our calculations
+    
+    // For the dot product calculation
+    const dotProduct = facingDirX * pointingVecX + facingDirY * pointingVecY;
+    
+    // For the cross product calculation (in 2D, it's a scalar)
+    const crossProduct = facingDirX * pointingVecY - facingDirY * pointingVecX;
+    
+    // Calculate the angle using atan2
+    // This gives us the signed angle between the vectors
+    let angle = Math.atan2(crossProduct, dotProduct) * (180 / Math.PI);
+    
+    // Adjust to get the clockwise angle from the facing direction
+    angle = -angle;
     
     // Normalize to 0-360 range
-    angleDiff = (angleDiff + 360) % 360;
+    angle = (angle + 360) % 360;
     
-    // In this test, angles should be interpreted from the perspective of someone
-    // standing at standingPos and facing facingPos.
-    // The angle should be measured clockwise from the facing direction
-    
-    // Since our facingAngle is now 0 degrees in this coordinate system,
-    // we need to use 90 degrees as our reference (since y-axis is inverted in browser)
-    let finalAngle = (-angleDiff + 90) % 360;
-    
-    // Final normalization to 0-360
-    if (finalAngle < 0) finalAngle += 360;
-    
-    return finalAngle;
+    return angle;
 }
 
 // Place objects in the scene - use fixed positions to match the screenshots
