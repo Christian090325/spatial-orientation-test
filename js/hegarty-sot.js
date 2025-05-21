@@ -287,14 +287,12 @@ function showTestTrial() {
                 responseTime: responseTime
             });
             
-            // Show the correct answer in red
-            showCorrectAnswer(correctAngle);
+            // No red line shown for correct answer in main test
+            // But the correct angle is still recorded in the responses array
             
-            // Wait 1.5 seconds and move to next trial
-            setTimeout(() => {
-                currentTrial++;
-                showTestTrial();
-            }, 1500);
+            // Move to next trial immediately
+            currentTrial++;
+            showTestTrial();
         }
     });
 }
