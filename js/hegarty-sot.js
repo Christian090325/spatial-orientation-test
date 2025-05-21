@@ -524,11 +524,18 @@ function showCorrectAnswer(correctAngle) {
     const centerY = canvas.height / 2;
     const radius = Math.min(canvas.width, canvas.height) / 2 - 20;
     
-    // Completely reverse the angle (360 - angle gives the opposite direction)
-    const reversedAngle = (360 - correctAngle) % 360;
+    // Mirror the angle across the vertical axis
+    // If angle is between 0-180, map to 180-0
+    // If angle is between 180-360, map to 360-180
+    let mirroredAngle;
+    if (correctAngle <= 180) {
+        mirroredAngle = 180 - correctAngle;
+    } else {
+        mirroredAngle = 540 - correctAngle; // 180 + (360 - correctAngle)
+    }
     
     // Convert angle to radians (and adjust for 0 at top)
-    const radians = (reversedAngle - 90) * Math.PI / 180;
+    const radians = (mirroredAngle - 90) * Math.PI / 180;
     
     // Draw the red line showing correct answer
     ctx.beginPath();
