@@ -47,6 +47,17 @@ let objectImages = {};
 let isInQualtrics = false;
 let currentAngle = 0;
 
+// Fixed positions of objects in the scene
+const objectPositions = [
+    { id: 'wheel', x: 50, y: 20 },       // Wheel at top center
+    { id: 'traffic-light', x: 25, y: 35 }, // Traffic light at middle left
+    { id: 'barrel', x: 75, y: 40 },      // Barrel at middle right
+    { id: 'trash-can', x: 20, y: 65 },   // Trash can at bottom left
+    { id: 'tree', x: 80, y: 80 },        // Tree at bottom right
+    { id: 'drum', x: 50, y: 65 },        // Drum at bottom center
+    { id: 'bell', x: 50, y: 50 }         // Bell at center
+];
+
 // Preload all images
 function preloadImages() {
     return new Promise((resolve) => {
@@ -287,26 +298,18 @@ function showTestTrial() {
                 responseTime: responseTime
             });
             
-            // No red line shown for correct answer in main test
-            // But the correct angle is still recorded in the responses array
+            // TEMPORARILY show the red line for the correct answer in all trials
+            // for testing purposes
+            showCorrectAnswer(correctAngle);
             
-            // Move to next trial immediately
-            currentTrial++;
-            showTestTrial();
+            // Wait 2 seconds to view the correct answer before moving to next trial
+            setTimeout(() => {
+                currentTrial++;
+                showTestTrial();
+            }, 2000);
         }
     });
 }
-
-// Fixed positions of objects in the scene
-const objectPositions = [
-    { id: 'wheel', x: 50, y: 20 },       // Wheel at top center
-    { id: 'traffic-light', x: 25, y: 35 }, // Traffic light at middle left
-    { id: 'barrel', x: 75, y: 40 },      // Barrel at middle right
-    { id: 'trash-can', x: 20, y: 65 },   // Trash can at bottom left
-    { id: 'tree', x: 80, y: 80 },        // Tree at bottom right
-    { id: 'drum', x: 50, y: 65 },        // Drum at bottom center
-    { id: 'bell', x: 50, y: 50 }         // Bell at center
-];
 
 // Calculate the correct angle between objects based on their positions
 function calculateCorrectAngle(standingId, facingId, pointingId) {
@@ -567,19 +570,32 @@ function finishTest() {
             <h2>Test Completed</h2>
             <p>Thank you for completing the Spatial Orientation Test.</p>
             <p>Your responses have been recorded.</p>
-            
-            <div style="margin-top: 30px;">
-                <button id="finish-button" style="padding: 8px 16px; cursor: pointer;">Return to Survey</button>
-            </div>
+            <p>Press SPACE BAR or ENTER to continue.</p>
         </div>
     `;
     
-    document.getElementById('finish-button').addEventListener('click', () => {
-        if (isInQualtrics) {
-            // Send data to Qualtrics
-            sendDataToQualtrics(responses);
+    // Add event listener for key press to continue
+    function keyHandler(e) {
+        if (e.code === 'Space' || e.code === 'Enter') {
+            document.removeEventListener('keydown', keyHandler);
+            
+            if (isInQualtrics) {
+                // Send data to Qualtrics
+                sendDataToQualtrics(responses);
+            } else {
+                // Show final message for standalone version
+                document.getElementById('sot-container').innerHTML = `
+                    <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: 20px;">
+                        <h2>Thank You</h2>
+                        <p>The test is now complete.</p>
+                    </div>
+                `;
+            }
         }
-    });
+    }
+    
+    // Listen for space bar or enter key
+    document.addEventListener('keydown', keyHandler);
 }
 
 // Send data to Qualtrics
