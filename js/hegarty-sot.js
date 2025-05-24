@@ -563,13 +563,24 @@ function finishTest() {
     
     // Calculate results
     const averageResponseTime = responses.reduce((sum, r) => sum + r.responseTime, 0) / responses.length;
+    const averageResponseTimeRounded = Math.round(averageResponseTime * 10) / 10; // Round to 1 decimal place
+    const averageAngularError = responses.reduce((sum, r) => sum + r.angularError, 0) / responses.length;
+    const averageAngularErrorRounded = Math.round(averageAngularError * 10) / 10; // Round to 1 decimal place
     
-    // Display completion message
+    // Display completion message with score
     document.getElementById('sot-container').innerHTML = `
         <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: 20px;">
             <h2>Test Completed</h2>
             <p>Thank you for completing the Spatial Orientation Test.</p>
-            <p>Your responses have been recorded.</p>
+            <div style="margin: 30px; padding: 20px; border: 2px solid #333; background: #f9f9f9;">
+                <h3>Your Results</h3>
+                <p><strong>Average Angular Error:</strong> ${averageAngularErrorRounded}°</p>
+                <p><strong>Average Response Time:</strong> ${averageResponseTimeRounded} seconds</p>
+                <p class="score-note" style="font-size: 0.9em; margin-top: 20px; color: #666;">
+                    Please copy both numbers separated by a comma (example: ${averageAngularErrorRounded}, ${averageResponseTimeRounded}) 
+                    and paste them in the survey question that follows.
+                </p>
+            </div>
             <p>Press SPACE BAR or ENTER to continue.</p>
         </div>
     `;
@@ -583,11 +594,20 @@ function finishTest() {
                 // Send data to Qualtrics
                 sendDataToQualtrics(responses);
             } else {
-                // Show final message for standalone version
+                // Show final message for standalone version with return instructions
                 document.getElementById('sot-container').innerHTML = `
                     <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: 20px;">
                         <h2>Thank You</h2>
                         <p>The test is now complete.</p>
+                        <p>Please close this tab and return to the survey to continue.</p>
+                        <div style="margin: 30px; padding: 20px; border: 2px solid #333; background: #f9f9f9;">
+                            <h3>Your Results</h3>
+                            <p><strong>Average Angular Error:</strong> ${averageAngularErrorRounded}°</p>
+                            <p><strong>Average Response Time:</strong> ${averageResponseTimeRounded} seconds</p>
+                            <p class="score-note" style="font-size: 0.9em; margin-top: 20px; color: #666;">
+                                Remember to enter both numbers separated by a comma (${averageAngularErrorRounded}, ${averageResponseTimeRounded}) in the survey.
+                            </p>
+                        </div>
                     </div>
                 `;
             }
