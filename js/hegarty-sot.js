@@ -14,10 +14,8 @@ const objects = [
     { id: 'barrel', name: 'barrel', src: 'assets/objects/barrel.svg' }
 ];
 
-// Define the test trials - matching the examples from screenshots
+// Define the test trials - with first 2 questions moved to the end
 const testTrials = [
-    { id: 1, standing: 'bell', facing: 'tree', pointing: 'drum' },
-    { id: 2, standing: 'tree', facing: 'bell', pointing: 'trash-can' },
     { id: 3, standing: 'traffic-light', facing: 'drum', pointing: 'trash-can' },
     { id: 4, standing: 'barrel', facing: 'drum', pointing: 'wheel' },
     { id: 5, standing: 'barrel', facing: 'trash-can', pointing: 'bell' },
@@ -27,7 +25,9 @@ const testTrials = [
     { id: 9, standing: 'drum', facing: 'tree', pointing: 'wheel' },
     { id: 10, standing: 'drum', facing: 'trash-can', pointing: 'barrel' },
     { id: 11, standing: 'trash-can', facing: 'drum', pointing: 'tree' },
-    { id: 12, standing: 'bell', facing: 'trash-can', pointing: 'barrel' }
+    { id: 12, standing: 'bell', facing: 'trash-can', pointing: 'barrel' },
+    { id: 1, standing: 'bell', facing: 'tree', pointing: 'drum' },
+    { id: 2, standing: 'tree', facing: 'bell', pointing: 'trash-can' }
 ];
 
 // Practice trials
@@ -298,9 +298,8 @@ function showTestTrial() {
                 responseTime: responseTime
             });
             
-            // TEMPORARILY show the red line for the correct answer in all trials
-            // for testing purposes
-            showCorrectAnswer(correctAngle);
+            // We no longer show the red line in test trials
+            // showCorrectAnswer(correctAngle);
             
             // Wait 2 seconds to view the correct answer before moving to next trial
             setTimeout(() => {
