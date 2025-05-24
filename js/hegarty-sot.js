@@ -41,6 +41,7 @@ const practiceTrials = [
 let currentTrial = 0;
 let responses = [];
 let startTime = 0;
+let trialStartTime = 0; // Added to track individual trial start time
 let testTimer = null;
 let timeRemaining = 300; // 5 minutes in seconds
 let objectImages = {};
@@ -269,13 +270,16 @@ function showTestTrial() {
     // Set up the response canvas
     setupResponseCanvas(trial.standing, trial.facing);
     
+    // Record the start time for this specific trial
+    trialStartTime = Date.now();
+    
     // Handle submission with ENTER key
     document.addEventListener('keydown', function enterHandler(e) {
         if (e.code === 'Enter') {
             document.removeEventListener('keydown', enterHandler);
             
-            // Record response
-            const responseTime = (Date.now() - startTime) / 1000;
+            // Record response time for this specific trial
+            const responseTime = (Date.now() - trialStartTime) / 1000;
             
             // Calculate the correct angle for this trial
             const correctAngle = calculateCorrectAngle(trial.standing, trial.facing, trial.pointing);
